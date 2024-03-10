@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mors Alfabesine Çeviri</title>
+</head>
+
+<body>
+    <h1>Mors Alfabesine Çeviri</h1>
+    <input type="text" id="passwordInput" placeholder="Enter password">
+    <input type="text" id="messageInput" placeholder="Enter message">
+    <button onclick="sendMessage()">Send Message</button>
+    <div id="messageOutput"></div>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8765");
+        let passwordEntered = false;
+
+        socket.onopen = () => {
+            console.log("WebSocket connection opened.");
+        };
+
+        socket.onmessage = (event) => {
+            const message = event.data;
+            console.log("Received message:", message);
+            if (message === "Password verified") {
+                passwordEntered = true;
+                document.getElementById("passwordInput").style.display = "none";
+            } else {
+                displayMessage(message);
+            }
+        };
+
+        socket.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        function sendMessage() {
+            const password = document.getElementById("passwordInput").value;
+            const message = document.getElementById("messageInput").value;
+
+            if (!passwordEntered) {
+                socket.send(password);
+            }
+
+            socket.send(message);
+            console.log("Sent message:", message);
+        }
+
+        function displayMessage(message) {
+            const messageOutput = document.getElementById("messageOutput");
+            messageOutput.innerHTML = `<p> Mors Çevirisi:${message}</p>`;
+        }
+
+        socket.onclose = () => {
+            console.log("WebSocket connection closed.");
+        };
+    </script>
+</body>
+
+</html>

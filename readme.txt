@@ -1,0 +1,1 @@
+Mors alfabeçevirisi için giriş şifresini HOOGN3RP1CNG89AYS giriniz.
